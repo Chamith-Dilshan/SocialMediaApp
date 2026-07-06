@@ -1,32 +1,35 @@
-from typing import Optional
+from functools import lru_cache
+from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel, Field
+from fastapi import Depends, FastAPI
+from sqlalchemy.orm import Session
 
+from app import config, model
+from app.database import engine, get_db
+
+model.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
-class Post(BaseModel):
-    id: Optional[int] = None
-    title: str = Field(..., min_length=1, max_length=200)
-    content: str = Field(..., min_length=1)
-    author: str = Field(..., min_length=1, max_length=100)
+
+# The @lru_cache decorator ensures the .env file is read only once on the first call, and the same
+# Settings object is reused for all later requests.
+# The @lru_cache + Depends(get_settings) pattern is most useful for route-level injection
+# (e.g., when a route needs to read a setting). For module-level setup like creating the database engine,
+# directly instantiating Settings() once is perfectly fine.
+# example usage ->
+# @app.get("/info")
+# async def info (settings: Annotated[config.Settings, Depends(get_settings)]):
+#     return {
+#         "app_name": settings.app_name,
+#         "admin_email": settings.admin_email,
+#     }
+@lru_cache
+def get_settings():
+    return config.Settings()
 
 
-posts: list[Post] = [
-    Post(id=1, title="First Post", content="This is the first post", author="John Doe"),
-    Post(id=2, title="Second Post", content="This is the second post", author="Jane Doe"),
-]
+SessionDep = Annotated[Session, Depends(get_db)]
 
-def find_post(post_id: int) -> Post | None:
-    """Helper function to find a post by ID."""
-    return next((post for post in posts if post.id == post_id), None)
-
-def find_post_id(post_id:int) -> int | None:
-    """Helper function to find the ID of a post."""
-    for index,post in enumerate(posts):
-        if post.id == post_id:
-            return index
-    return None
 
 # When defining routers, the order of the endpoints is matter.
 # Because the first endpoint that matches the request is executed.
@@ -34,51 +37,67 @@ def find_post_id(post_id:int) -> int | None:
 # And if there are multiple endpoints that match the request, the first one is executed.
 # For example, "posts/latest" should be defined before "posts/{post_id}".
 
+
 @app.get("/")
 async def root() -> dict:
     return {"message": "Hello World For real"}
 
+
 @app.get("/posts")
-async def get_posts() -> dict:
+async def get_posts(session: SessionDep) -> dict:
+    posts = session.query(model.Post).all()
+    print(posts)
     return {"message": "This is a list of posts", "posts": posts}
 
-@app.get("/posts/{post_id}")
-async def get_post(post_id: int) -> dict:
-    post = find_post(post_id)
-    if post is not None:
-        return {"message": f"Post {post_id} found", "post": post}
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Post with id {post_id} not found"
-    )
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
-async def create_post(post: Post) -> dict:
-    new_post = post.model_copy()
-    new_post.id = max((p.id for p in posts if p.id), default=0) + 1
-    posts.append(new_post)
-    return {"message": f"Post created by {new_post.author}", "post": new_post}
-
-@app.put("/posts/{post_id}")
-async def update_post(post_id: int, post: Post) -> dict:
-    post_to_update = find_post(post_id)
-    if post_to_update is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {post_id} not found"
-        )
-    post_to_update.title = post.title
-    post_to_update.content = post.content
-    post_to_update.author = post.author
-    return {"message": f"Post {post_id} updated", "post": post_to_update}
-
-@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(post_id: int) -> None:
-    post_to_delete = find_post_id(post_id)
-    if post_to_delete is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {post_id} not found"
-        )
-    # posts.remove(posts[post_to_delete])
-    posts.pop(post_to_delete)
+#
+# @app.get("/posts/{post_id}")
+# async def get_post(post_id: int) -> dict:
+#     cursor.execute("""SELECT * FROM posts WHERE id = %s""", (str(post_id),))
+#     post = cursor.fetchone()
+#     if post is not None:
+#         return {"message": f"Post {post_id} found", "post": post}
+#     raise HTTPException(
+#         status_code=status.HTTP_404_NOT_FOUND,
+#         detail=f"Post with id {post_id} not found",
+#     )
+#
+#
+# @app.post("/posts", status_code=status.HTTP_201_CREATED)
+# async def create_post(post: Post) -> dict:
+#     cursor.execute(
+#         """INSERT INTO posts (title,content,published) VALUES (%s,%s,%s) RETURNING *""",
+#         (post.title, post.content, post.published),
+#     )
+#     new_post = cursor.fetchone()
+#     conn.commit()
+#     return {"message": "New Post :", "post": new_post}
+#
+#
+# @app.put("/posts/{post_id}")
+# async def update_post(post_id: int, post: Post) -> dict:
+#     cursor.execute(
+#         """UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *""",
+#         (post.title, post.content, post.published, str(post_id)),
+#     )
+#     updated_post = cursor.fetchone()
+#     conn.commit()
+#     if updated_post is None:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail=f"Post with id {post_id} not found",
+#         )
+#     return {"message": f"Post {post_id} updated", "post": updated_post}
+#
+#
+# @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+# async def delete_post(post_id: int) -> Response:
+#     cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *""", (str(post_id),))
+#     deleted_post = cursor.fetchone()
+#     conn.commit()
+#     if deleted_post is None:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail=f"Post with id {post_id} not found",
+#         )
+#     return Response(status_code=status.HTTP_204_NO_CONTENT)
