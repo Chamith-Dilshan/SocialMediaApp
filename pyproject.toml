@@ -7,16 +7,20 @@ dependencies = [
     "fastapi[standard]>=0.139.0",
     "uvicorn>=0.50.1",
     "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.2",
     "httpx2>=2.5.0",
     "psycopg[binary]>=3.3.4", # Newest version(V3) and if neede use this instead of psycopg2
-    "sqlalchemy>=2.0.51",
+    "sqlalchemy[asyncio]>=2.0.51", # required asyncio dependencies (including greenlet in current versions). Starting
+    # with SQLAlchemy 2.0, the asyncio dependencies are no longer installed by default.
     "psycopg2-binary>=2.9.12", # Add because SQLAlchemy required this (use binary for faster/better performance)
-    "pydantic-settings>=2.14.2",
+    "asyncpg>=0.31.0", # PostgreSQL async driver that SQLAlchemy uses underneath when you create an async engine
+    "alembic>=1.18.5", # DB migrations tasks
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
     "black>=26.5.1",
     "ruff>=0.15.20",
     "pyrefly>=1.1.1",

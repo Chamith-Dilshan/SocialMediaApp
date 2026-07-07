@@ -69,6 +69,18 @@ fastapi dev or fastapi dev main.py
 pytest or uv run pytest
 ```
 
+### Initialize Alembic
+
+```
+alembic init -t async alembic
+```
+
+alembic current  
+alembic history     
+alembic downgrade base
+alembic revision --autogenerate -m "create users table"
+alembic upgrade head
+
 Contribution guide lines->
 
 1. we use pydantic for data validation
