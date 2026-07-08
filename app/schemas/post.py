@@ -8,7 +8,7 @@ class PostCreateRequest(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     content: str = Field(min_length=1)
     published: bool = Field(default=True)
-    user_id: UUID | None = None
+    author_id: UUID
 
 
 class PostUpdateRequest(BaseModel):
@@ -21,10 +21,10 @@ class PostResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
+    author_id: UUID
     title: str
     content: str
     published: bool
-    user_id: UUID | None = None
     created_at: datetime
     updated_at: datetime
 

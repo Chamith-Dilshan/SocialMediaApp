@@ -31,17 +31,6 @@ class Post(Base):
         index=True,
     )
 
-    user_id: Mapped[UUID | None] = mapped_column(
-        ForeignKey("users.id"),
-        nullable=True,
-        index=True,
-    )
-
-    author: Mapped[User] = relationship(
-        "User",
-        back_populates="posts",
-    )
-
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         index=True,
@@ -52,4 +41,9 @@ class Post(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
+    )
+
+    author: Mapped[User] = relationship(
+        "User",
+        back_populates="posts",
     )

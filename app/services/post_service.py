@@ -20,7 +20,7 @@ class PostService:
                 title=data.title,
                 content=data.content,
                 published=data.published,
-                user_id=data.user_id,
+                author_id=data.author_id,
             )
             return await self.post_repository.create(post)
         except SQLAlchemyError as exc:
