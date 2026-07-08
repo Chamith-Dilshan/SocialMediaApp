@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import (
@@ -34,6 +33,7 @@ class UserService:
 
         user = User(
             email=payload.email,
+            password=payload.password,
             first_name=payload.first_name,
             last_name=payload.last_name,
         )
@@ -78,6 +78,9 @@ class UserService:
 
         if payload.last_name is not None:
             user.last_name = payload.last_name
+
+        if payload.password is not None:
+            user.password = payload.password
 
         return await self.repository.update(user)
 

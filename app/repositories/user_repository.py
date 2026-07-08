@@ -44,17 +44,14 @@ class UserRepository:
         limit: int = 10,
     ) -> tuple[list[User], int]:
 
-        count_stmt = select(func.count(User.id))
-
-        total = (await self.db.execute(count_stmt)).scalar_one()
-
+        count_stmt = select(func.count()).select_from(User)
         stmt = select(User).offset(skip).limit(limit).order_by(User.created_at.desc())
 
+        total = await self.db.scalar(count_stmt)
         result = await self.db.execute(stmt)
+        users = list(result.scalars().all())
 
-        users = result.scalars().all()
-
-        return users, total
+        return users, total or 0
 
     async def delete(
         self,
