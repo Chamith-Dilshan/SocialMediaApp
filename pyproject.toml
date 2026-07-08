@@ -14,7 +14,6 @@ dependencies = [
     # with SQLAlchemy 2.0, the asyncio dependencies are no longer installed by default.
     "psycopg2-binary>=2.9.12", # Add because SQLAlchemy required this (use binary for faster/better performance)
     "asyncpg>=0.31.0", # PostgreSQL async driver that SQLAlchemy uses underneath when you create an async engine
-    "alembic>=1.18.5", # DB migrations tasks
 ]
 
 [dependency-groups]
