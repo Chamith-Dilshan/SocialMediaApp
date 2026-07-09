@@ -1,5 +1,7 @@
 from app.core.base import Base
 from app.core.database import engine
+
+# keep these models to create tables in db
 from app.models.post import Post
 from app.models.user import User
 
