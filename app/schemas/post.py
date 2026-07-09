@@ -3,6 +3,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.user import UserResponse
+
 
 class PostCreateRequest(BaseModel):
     title: str = Field(min_length=1, max_length=200)
@@ -21,6 +23,7 @@ class PostResponse(BaseModel):
 
     id: UUID
     author_id: UUID
+    author: UserResponse
     title: str
     content: str
     published: bool

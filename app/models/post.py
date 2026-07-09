@@ -43,6 +43,8 @@ class Post(Base):
         onupdate=func.now(),
     )
 
+    # This will help us to get the author of the post
+    # Makes sure to add that to shema
     author: Mapped[User] = relationship(
         "User",
         back_populates="posts",
