@@ -36,11 +36,7 @@ async def create_post(
     payload: PostCreateRequest, db: SessionDep, current_user: CurrentUser
 ):
     service = PostService(db)
-    new_post = PostCreateRequest(
-        author_id=current_user.id,
-        **payload.dict(),
-    )
-    return await service.create_post(new_post)
+    return await service.create_post(payload, current_user.id)
 
 
 @router.get("", response_model=PostListResponse)
@@ -58,7 +54,7 @@ async def list_posts(
 @router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id: UUID, db: SessionDep, current_user: CurrentUser):
     service = PostService(db)
-    return await service.get_post(post_id)
+    return await service.get_post(post_id, current_user.id)
 
 
 @router.patch("/{post_id}", response_model=PostResponse)
@@ -66,10 +62,10 @@ async def update_post(
     post_id: UUID, payload: PostUpdateRequest, db: SessionDep, current_user: CurrentUser
 ):
     service = PostService(db)
-    return await service.update_post(post_id, payload)
+    return await service.update_post(post_id, payload, current_user.id)
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(post_id: UUID, db: SessionDep, current_user: CurrentUser):
     service = PostService(db)
-    await service.delete_post(post_id)
+    await service.delete_post(post_id, current_user.id)

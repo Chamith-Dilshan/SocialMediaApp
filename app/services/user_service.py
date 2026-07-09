@@ -3,14 +3,12 @@ from uuid import UUID
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import settings
 from app.core.exceptions import (
     ConflictException,
     NotFoundException,
 )
 from app.core.security import (
     get_password_hash,
-    verify_password,
 )
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
@@ -76,19 +74,6 @@ class UserService:
 
         return user
 
-    async def authenticate_user(
-        self,
-        email: str,
-        password: str,
-    ) -> User | bool:
-        user = await self.get_user_by_email(email)
-        if not user:
-            verify_password(password, settings.ALGORITHM)  # timing-safe rejection
-            return False
-        if not verify_password(password, user.password):
-            return False
-        return user
-
     async def list_users(
         self,
         skip: int,
@@ -107,14 +92,10 @@ class UserService:
 
         user = await self.get_user(user_id)
 
-        if payload.first_name is not None:
-            user.first_name = payload.first_name
+        update_data = payload.model_dump(exclude_unset=True)
 
-        if payload.last_name is not None:
-            user.last_name = payload.last_name
-
-        if payload.password is not None:
-            user.password = payload.password
+        for field, value in update_data.items():
+            setattr(user, field, value)
 
         return await self.repository.update(user)
 
