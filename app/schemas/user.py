@@ -11,6 +11,11 @@ class UserCreateRequest(BaseModel):
     last_name: str = Field(min_length=1, max_length=100)
 
 
+class UserLoginRequest(BaseModel):
+    username: EmailStr
+    password: str = Field(min_length=8, max_length=255)
+
+
 class UserUpdateRequest(BaseModel):
     password: str | None = Field(default=None, min_length=8, max_length=255)
     first_name: str | None = Field(default=None, max_length=100)
