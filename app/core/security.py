@@ -1,6 +1,5 @@
 from datetime import UTC, datetime, timedelta
 from typing import Annotated
-from uuid import UUID
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -9,7 +8,6 @@ from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 
 from app.core.config import settings
-from app.models.user import User
 from app.schemas.token import TokenData
 
 # --- Config ---
@@ -64,17 +62,3 @@ def decode_token(token: Annotated[str, Depends(oauth2_scheme)]) -> TokenData:
         return TokenData(user_id=user_id)
     except InvalidTokenError:
         raise credentials_exception
-
-
-async def authenticate_user(
-    self,
-    email: str,
-    password: str,
-) -> User | bool:
-    user = await self.get_user_by_email(email)
-    if not user:
-        verify_password(password, settings.ALGORITHM)  # timing-safe rejection
-        return False
-    if not verify_password(password, user.password):
-        return False
-    return user

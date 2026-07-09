@@ -43,8 +43,10 @@ class PostService:
 
         return post
 
-    async def get_posts(self, skip: int = 0, limit: int = 10) -> tuple[list[Post], int]:
-        return await self.post_repository.get_all(skip=skip, limit=limit)
+    async def get_posts(
+        self, skip: int = 0, limit: int = 10, search: str | None = None
+    ) -> tuple[list[Post], int]:
+        return await self.post_repository.get_all(search=search, skip=skip, limit=limit)
 
     async def update_post(
         self, post_id: UUID, data: PostUpdateRequest, user_id: UUID

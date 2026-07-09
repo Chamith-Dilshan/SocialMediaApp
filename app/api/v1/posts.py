@@ -43,11 +43,12 @@ async def create_post(
 async def list_posts(
     db: SessionDep,
     current_user: CurrentUser,
+    search: str | None = None,
     skip: SkipQuery = 0,
     limit: LimitQuery = 10,
 ):
     service = PostService(db)
-    posts, total = await service.get_posts(skip=skip, limit=limit)
+    posts, total = await service.get_posts(search=search, skip=skip, limit=limit)
     return {"total": total, "items": posts}
 
 

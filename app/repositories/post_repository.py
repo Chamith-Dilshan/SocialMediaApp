@@ -11,7 +11,7 @@ class PostRepository:
         self.db = db
 
     async def create(self, post: Post) -> Post:
-        self.db.add(post) 
+        self.db.add(post)
         await self.db.commit()
         await self.db.refresh(post)
         return post
@@ -22,9 +22,17 @@ class PostRepository:
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_all(self, skip: int = 0, limit: int = 10) -> tuple[list[Post], int]:
+    async def get_all(
+        self, skip: int = 0, limit: int = 10, search: str | None = None
+    ) -> tuple[list[Post], int]:
         count_stmt = select(func.count()).select_from(Post)
-        stmt = select(Post).offset(skip).limit(limit).order_by(Post.created_at.desc())
+        stmt = (
+            select(Post)
+            .filter(Post.title.contains(search))
+            .offset(skip)
+            .limit(limit)
+            .order_by(Post.created_at.desc())
+        )
 
         total = await self.db.scalar(count_stmt)
         result = await self.db.execute(stmt)

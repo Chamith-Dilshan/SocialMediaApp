@@ -33,21 +33,15 @@ async def register(payload: UserCreateRequest, db: SessionDep) -> UserResponse:
     return await service.create_user(payload)
 
 
-# @router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
-# async def login (payload: UserLoginRequest, db: SessionDep) -> Token:
-#     """Authenticate a user with a username and password."""
-#     service = UserService(db)
-#     return await service.authenticate_user(payload)
-
-
 @router.post("/login", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: SessionDep,
 ) -> Token:
-    """Exchange username + password for a JWT access token."""
+    """Exchange username and password for a JWT access token."""
     service = UserService(db)
     user = await service.authenticate_user(form_data.username, form_data.password)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
