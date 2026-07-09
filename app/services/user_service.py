@@ -8,7 +8,10 @@ from app.core.exceptions import (
     ConflictException,
     NotFoundException,
 )
-from app.core.security import get_password_hash, verify_password
+from app.core.security import (
+    get_password_hash,
+    verify_password,
+)
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import (

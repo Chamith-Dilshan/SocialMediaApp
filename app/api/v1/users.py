@@ -4,11 +4,10 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 
 from app.core.config import settings
-from app.core.dependencies import SessionDep
-from app.core.security import get_current_user_dep
+from app.dependancies.database_dep import SessionDep
+from app.dependancies.security_dep import get_current_user_dep
 from app.schemas.token import TokenData
 from app.schemas.user import (
-    UserCreateRequest,
     UserListResponse,
     UserResponse,
     UserUpdateRequest,
@@ -25,21 +24,6 @@ LimitQuery = Annotated[int, Query(ge=1, le=100)]
 
 # Reusable alias
 CurrentUser = Annotated[TokenData, Depends(get_current_user_dep)]
-
-
-@router.post(
-    "",
-    response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED,
-)
-async def create_user(
-    payload: UserCreateRequest,
-    db: SessionDep,
-    current_user: CurrentUser,
-):
-    service = UserService(db)
-
-    return await service.create_user(payload)
 
 
 @router.get(

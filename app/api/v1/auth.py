@@ -1,16 +1,17 @@
 from datetime import timedelta
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core.config import settings
-from app.core.dependencies import SessionDep
 from app.core.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     create_access_token,
-    get_current_user_dep,
 )
+from app.dependancies.database_dep import SessionDep
+from app.dependancies.security_dep import get_current_user_dep
 from app.schemas.token import Token, TokenData
 from app.schemas.user import UserCreateRequest, UserResponse
 from app.services.user_service import UserService
@@ -55,21 +56,19 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user.email},
+        data={"sub": str(user.id)},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     return Token(access_token=access_token, token_type="bearer")
 
 
 @router.get("/me", response_model=UserResponse)
-async def read_users_me(token_data: CurrentUser, db: SessionDep) -> UserResponse:
+async def read_users_me(current_user: CurrentUser, db: SessionDep) -> UserResponse:
     """Return the currently authenticated user's profile."""
-    service = UserService(db)
-    user = await service.get_user_by_email(token_data.username)
-    if user is None:
+    if current_user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return user
+    return current_user

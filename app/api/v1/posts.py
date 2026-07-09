@@ -4,8 +4,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 
 from app.core.config import settings
-from app.core.dependencies import SessionDep
-from app.core.security import get_current_user_dep
+from app.dependancies.database_dep import SessionDep
+from app.dependancies.security_dep import get_current_user_dep
 from app.schemas.post import (
     PostCreateRequest,
     PostListResponse,
@@ -36,7 +36,11 @@ async def create_post(
     payload: PostCreateRequest, db: SessionDep, current_user: CurrentUser
 ):
     service = PostService(db)
-    return await service.create_post(payload)
+    new_post = PostCreateRequest(
+        author_id=current_user.id,
+        **payload.dict(),
+    )
+    return await service.create_post(new_post)
 
 
 @router.get("", response_model=PostListResponse)

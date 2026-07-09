@@ -8,7 +8,6 @@ class PostCreateRequest(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     content: str = Field(min_length=1)
     published: bool = Field(default=True)
-    author_id: UUID
 
 
 class PostUpdateRequest(BaseModel):

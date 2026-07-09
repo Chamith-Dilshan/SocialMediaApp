@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 from typing import Annotated
+from uuid import UUID
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -56,16 +57,9 @@ def decode_token(token: Annotated[str, Depends(oauth2_scheme)]) -> TokenData:
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str | None = payload.get("sub")
-        if username is None:
+        user_id: str | None = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        return TokenData(username=username)
+        return TokenData(user_id=user_id)
     except InvalidTokenError:
         raise credentials_exception
-
-
-# --- Dependency: get current user (injected into protected routes) ---
-async def get_current_user_dep(
-    token: Annotated[str, Depends(oauth2_scheme)],
-) -> TokenData:
-    return decode_token(token)
