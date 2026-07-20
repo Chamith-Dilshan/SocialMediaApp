@@ -8,7 +8,7 @@ from app.core.security import (
     oauth2_scheme,
 )
 from app.dependancies.database_dep import SessionDep
-from app.schemas.user import UserResponse
+from app.dtos.user_dto import UserResponse
 from app.services.user_service import UserService
 
 

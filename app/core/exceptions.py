@@ -20,6 +20,19 @@ class ConflictException(AppException):
 class ValidationException(AppException):
     pass
 
+class PostNotFoundError(Exception):
+    pass
+
+class PostOwnershipError(Exception):
+    pass
+
+
+class UserNotFoundError(Exception):
+    pass
+
+class ForbiddenException(AppException):
+    pass
+
 
 class DatabaseException(AppException):
     def __init__(self, message: str = "Database operation failed"):

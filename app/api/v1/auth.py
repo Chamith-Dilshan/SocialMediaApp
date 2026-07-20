@@ -11,8 +11,9 @@ from app.core.security import (
 )
 from app.dependancies.database_dep import SessionDep
 from app.dependancies.security_dep import get_current_user_dep
-from app.schemas.token import Token, TokenData
-from app.schemas.user import UserCreateRequest, UserResponse
+from app.dtos.token_dto import Token, TokenData
+from app.dtos.user_dto import UserCreateRequest, UserResponse
+from app.models.user import User
 from app.services.user_service import UserService
 
 router = APIRouter(
@@ -27,13 +28,13 @@ CurrentUser = Annotated[TokenData, Depends(get_current_user_dep)]
 @router.post(
     "/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
 )
-async def register(payload: UserCreateRequest, db: SessionDep) -> UserResponse:
+async def register(payload: UserCreateRequest, db: SessionDep) -> User:
     """Register a new user with a username, email, and password."""
     service = UserService(db)
     return await service.create_user(payload)
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: SessionDep,
@@ -55,8 +56,8 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
-@router.get("/me", response_model=UserResponse)
-async def read_users_me(current_user: CurrentUser, db: SessionDep) -> UserResponse:
+@router.get("/me", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def read_users_me(current_user: CurrentUser, db: SessionDep) -> User:
     """Return the currently authenticated user's profile."""
     if current_user is None:
         raise HTTPException(
@@ -64,4 +65,6 @@ async def read_users_me(current_user: CurrentUser, db: SessionDep) -> UserRespon
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return current_user
+    service = UserService(db)
+    user = await service.get_user(current_user.user_id)
+    return user

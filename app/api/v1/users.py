@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, Query, status
 from app.core.config import settings
 from app.dependancies.database_dep import SessionDep
 from app.dependancies.security_dep import get_current_user_dep
-from app.schemas.token import TokenData
-from app.schemas.user import (
+from app.dtos.token_dto import TokenData
+from app.dtos.user_dto import (
     UserListResponse,
     UserResponse,
     UserUpdateRequest,

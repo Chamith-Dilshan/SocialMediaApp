@@ -2,13 +2,14 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.v1 import auth, posts, users
+from app.api.v1 import auth, posts, users, likes
 from app.core.config import settings
 from app.core.db_init import create_tables
-from app.core.exception_handlers import (
-    app_exception_handler,
-)
-from app.core.exceptions import AppException
+
+
+# from app.core.exception_handlers import (
+#     app_exception_handler,
+# )
 
 
 @asynccontextmanager
@@ -31,8 +32,13 @@ app.include_router(
 app.include_router(
     users.router,
 )
+
 app.include_router(
     posts.router,
+)
+
+app.include_router(
+    likes.router,
 )
 
 
