@@ -10,13 +10,14 @@ dependencies = [
     "pydantic-settings>=2.14.2",
     "email-validator>=2.3.0",
     "pwdlib[argon2]>=0.3.0",
-    "httpx2>=2.7.0",
+    #"httpx2>=2.7.0",
     "sqlalchemy[asyncio]>=2.0.51", # required asyncio dependencies (including greenlet in current versions). Starting
     # with SQLAlchemy 2.0, the asyncio dependencies are no longer installed by default.
     #"psycopg[binary]>=3.3.4", # Newest version(V3) and if neede use this instead of psycopg2
     #"psycopg2-binary>=2.9.12", # Add because SQLAlchemy required this (use binary for faster/better performance)
     "asyncpg>=0.31.0", # PostgreSQL async driver that SQLAlchemy uses underneath when you create an async engine
     "pyjwt>=2.13.0",
+    "httpx>=0.28.1",
 ]
 
 [dependency-groups]
@@ -28,6 +29,26 @@ dev = [
     "black>=26.5.1",
     "ruff>=0.15.22",
     "pyrefly>=1.1.1",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["app/tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/tests/*", "app/core/logging.py"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 90
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "@abstractmethod",
 ]
 
 [tool.black]

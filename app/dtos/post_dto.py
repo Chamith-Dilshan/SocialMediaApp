@@ -13,7 +13,7 @@ class PostCreateRequest(BaseModel):
 
 
 class PostUpdateRequest(BaseModel):
-    title: str | None = Field(default=None, max_length=200)
+    title: str | None = Field(default=None, min_length=1, max_length=200)
     content: str | None = Field(default=None, min_length=1)
     published: bool | None = None
 

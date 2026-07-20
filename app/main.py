@@ -5,11 +5,7 @@ from fastapi import FastAPI
 from app.api.v1 import auth, posts, users, likes
 from app.core.config import settings
 from app.core.db_init import create_tables
-
-
-# from app.core.exception_handlers import (
-#     app_exception_handler,
-# )
+from app.core.exceptions import AppException
 
 
 @asynccontextmanager
@@ -20,10 +16,17 @@ async def lifespan(application: FastAPI):
 
 app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, lifespan=lifespan)
 
-# app.add_exception_handler(
-#     AppException,
-#     app_exception_handler,
-# )
+
+# ---------------------------------------------------------------------------
+# Global handler for all domain exceptions (NotFoundException → 404, etc.)
+# ---------------------------------------------------------------------------
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message},
+    )
+
 
 app.include_router(
     auth.router,
