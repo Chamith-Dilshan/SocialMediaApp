@@ -6,12 +6,12 @@ from fastapi import APIRouter, Depends, Query, status
 from app.core.config import settings
 from app.dependancies.database_dep import SessionDep
 from app.dependancies.security_dep import get_current_user_dep
-from app.dtos.token_dto import TokenData
 from app.dtos.user_dto import (
     UserListResponse,
     UserResponse,
     UserUpdateRequest,
 )
+from app.models.user import User
 from app.services.user_service import UserService
 
 router = APIRouter(
@@ -23,7 +23,7 @@ SkipQuery = Annotated[int, Query(ge=0)]
 LimitQuery = Annotated[int, Query(ge=1, le=100)]
 
 # Reusable alias
-CurrentUser = Annotated[TokenData, Depends(get_current_user_dep)]
+CurrentUser = Annotated[User, Depends(get_current_user_dep)]
 
 
 @router.get(

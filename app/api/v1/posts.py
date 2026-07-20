@@ -12,7 +12,7 @@ from app.dtos.post_dto import (
     PostResponse,
     PostUpdateRequest,
 )
-from app.dtos.token_dto import TokenData
+from app.models.user import User
 from app.services.post_service import PostService
 
 router = APIRouter(
@@ -24,7 +24,7 @@ SkipQuery = Annotated[int, Query(ge=0)]
 LimitQuery = Annotated[int, Query(ge=1, le=100)]
 
 # Reusable alias
-CurrentUser = Annotated[TokenData, Depends(get_current_user_dep)]
+CurrentUser = Annotated[User, Depends(get_current_user_dep)]
 
 
 @router.post(
@@ -36,7 +36,7 @@ async def create_post(
     payload: PostCreateRequest, db: SessionDep, current_user: CurrentUser
 ):
     service = PostService(db)
-    return await service.create_post(payload, current_user.user_id)
+    return await service.create_post(payload, current_user.id)
 
 
 # My Posts
@@ -54,8 +54,8 @@ async def get_my_posts(
     service = PostService(db)
 
     posts, total = await service.get_posts_by_author(
-        author_id=current_user.user_id,
-        viewer_id=current_user.user_id,
+        author_id=current_user.id,
+        viewer_id=current_user.id,
         search=search,
         skip=skip,
         limit=limit,
@@ -84,7 +84,7 @@ async def get_user_posts(
 
     posts, total = await service.get_posts_by_author(
         author_id=author_id,
-        viewer_id=current_user.user_id,
+        viewer_id=current_user.id,
         search=search,
         skip=skip,
         limit=limit,
@@ -111,7 +111,7 @@ async def get_all_posts(
     service = PostService(db)
 
     posts, total = await service.get_all_posts(
-        viewer_id=current_user.user_id,
+        viewer_id=current_user.id,
         search=search,
         skip=skip,
         limit=limit,
@@ -126,7 +126,7 @@ async def get_all_posts(
 @router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id: UUID, db: SessionDep, current_user: CurrentUser):
     service = PostService(db)
-    return await service.get_post(post_id, current_user.user_id)
+    return await service.get_post(post_id=post_id, user_id=current_user.id)
 
 
 @router.patch("/{post_id}", response_model=PostResponse)
@@ -134,10 +134,10 @@ async def update_post(
     post_id: UUID, payload: PostUpdateRequest, db: SessionDep, current_user: CurrentUser
 ):
     service = PostService(db)
-    return await service.update_post(post_id, payload, current_user.user_id)
+    return await service.update_post(post_id, payload, current_user.id)
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(post_id: UUID, db: SessionDep, current_user: CurrentUser):
     service = PostService(db)
-    await service.delete_post(post_id, current_user.user_id)
+    await service.delete_post(post_id, current_user.id)

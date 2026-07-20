@@ -11,7 +11,7 @@ from app.core.security import (
 )
 from app.dependancies.database_dep import SessionDep
 from app.dependancies.security_dep import get_current_user_dep
-from app.dtos.token_dto import Token, TokenData
+from app.dtos.token_dto import Token
 from app.dtos.user_dto import UserCreateRequest, UserResponse
 from app.models.user import User
 from app.services.user_service import UserService
@@ -22,7 +22,7 @@ router = APIRouter(
 )
 
 # Reusable alias
-CurrentUser = Annotated[TokenData, Depends(get_current_user_dep)]
+CurrentUser = Annotated[User, Depends(get_current_user_dep)]
 
 
 @router.post(
@@ -66,5 +66,5 @@ async def read_users_me(current_user: CurrentUser, db: SessionDep) -> User:
             headers={"WWW-Authenticate": "Bearer"},
         )
     service = UserService(db)
-    user = await service.get_user(current_user.user_id)
+    user = await service.get_user(current_user.id)
     return user
