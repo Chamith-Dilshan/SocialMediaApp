@@ -1,21 +1,19 @@
 class AppException(Exception):
     def __init__(
         self,
+        status_code: int,
         message: str,
-        status_code: int = 400,
     ):
-        super().__init__(message)
-        self.message = message
         self.status_code = status_code
+        self.message = message
 
 
 class NotFoundException(AppException):
-    pass
-
+    def __init__(self, message: str):
+        super().__init__(404, message)
 
 class ConflictException(AppException):
     pass
-
 
 class ValidationException(AppException):
     pass
@@ -31,14 +29,13 @@ class UserNotFoundError(Exception):
     pass
 
 class ForbiddenException(AppException):
-    pass
+    def __init__(self, message: str):
+        super().__init__(403, message)
 
-
-class DatabaseException(AppException):
-    def __init__(self, message: str = "Database operation failed"):
-        super().__init__(message=message, status_code=500)
-
-
-class DatabaseException(AppException):
-    def __init__(self, message: str = "Database operation failed"):
-        super().__init__(message=message, status_code=500)
+class DatabaseException(Exception):
+    def __init__(
+        self,
+        message: str = "Database operation failed",
+    ):
+        self.message = message
+        super().__init__(message)

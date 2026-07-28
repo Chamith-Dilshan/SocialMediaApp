@@ -10,7 +10,6 @@ def post_to_response(
 
     return PostResponse(
         id=post.id,
-        author_id=post.author_id,
         author=post.author,
         title=post.title,
         content=post.content,

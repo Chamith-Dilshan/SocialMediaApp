@@ -17,14 +17,28 @@ class PostService:
         self.db = db
         self.post_repository = PostRepository(db)
 
-    async def create_post(self, data: PostCreateRequest, user_id: UUID) -> Post:
+    async def create_post(self, data: PostCreateRequest, user_id: UUID) -> PostResponse:
         post = Post(
             title=data.title,
             content=data.content,
             published=data.published,
             author_id=user_id,
         )
-        return await self.post_repository.create(post)
+        new_post = await self.post_repository.create(post)
+        # post_with_like: PostWithLikeData = {
+        #     "post": new_post,
+        #     "like_count": 0,
+        #     "is_liked": False,
+        # }
+        created_post = await self.post_repository.get_by_id(
+            new_post.id,
+            user_id,
+        )
+
+        if created_post is None:
+            raise NotFoundException(message="Post not found")
+
+        return post_to_response(created_post)
 
     async def get_post(
         self,
@@ -34,14 +48,12 @@ class PostService:
         post = await self.post_repository.get_by_id(post_id, user_id)
 
         if post is None:
-            raise NotFoundException(
-                message="Post not found", status_code=status.HTTP_404_NOT_FOUND
-            )
+            raise NotFoundException(message="Post not found")
 
         return post_to_response(post)
 
+    @staticmethod
     def verify_post_owner(
-        self,
         post: Post,
         user_id: UUID,
     ) -> None:
@@ -88,12 +100,10 @@ class PostService:
 
     async def update_post(
         self, post_id: UUID, data: PostUpdateRequest, user_id: UUID
-    ) -> Post:
+    ) -> PostResponse:
         post = await self.post_repository.get_model_by_id(post_id)
         if post is None:
-            raise NotFoundException(
-                message="Post not found", status_code=status.HTTP_404_NOT_FOUND
-            )
+            raise NotFoundException(message="Post not found")
         self.verify_post_owner(post, user_id)
         update_data = data.model_dump(
             exclude_unset=True
@@ -102,13 +112,18 @@ class PostService:
         for field, value in update_data.items():
             setattr(post, field, value)
 
-        return await self.post_repository.update(post)
+        updated_post = await self.post_repository.update(post)
+        post_with_like = await self.post_repository.get_by_id(
+            updated_post.id,
+            user_id,
+        )
+        if post_with_like is None:
+            raise NotFoundException(message="Post not found")
+        return post_to_response(post_with_like)
 
     async def delete_post(self, post_id: UUID, user_id: UUID) -> None:
         post = await self.post_repository.get_model_by_id(post_id)
         if post is None:
-            raise NotFoundException(
-                message="Post not found", status_code=status.HTTP_404_NOT_FOUND
-            )
+            raise NotFoundException(message="Post not found")
         self.verify_post_owner(post, user_id)
         await self.post_repository.delete(post)
