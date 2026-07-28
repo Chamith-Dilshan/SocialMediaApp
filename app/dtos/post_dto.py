@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.schemas.user import UserResponse
+from app.dtos.user_dto import UserResponse
 
 
 class PostCreateRequest(BaseModel):
@@ -13,7 +13,7 @@ class PostCreateRequest(BaseModel):
 
 
 class PostUpdateRequest(BaseModel):
-    title: str | None = Field(default=None, max_length=200)
+    title: str | None = Field(default=None, min_length=1, max_length=200)
     content: str | None = Field(default=None, min_length=1)
     published: bool | None = None
 
@@ -22,11 +22,12 @@ class PostResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    author_id: UUID
     author: UserResponse
     title: str
     content: str
     published: bool
+    like_count: int
+    is_liked: bool
     created_at: datetime
     updated_at: datetime
 

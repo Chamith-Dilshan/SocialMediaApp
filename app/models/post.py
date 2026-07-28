@@ -2,13 +2,14 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, String, func, text
+from sqlalchemy import DateTime, ForeignKey, String, func, text, true
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.base import Base
 
 if TYPE_CHECKING:
     from app.models.user import User
+    from app.models.post_like import PostLike
 
 
 class Post(Base):
@@ -23,7 +24,7 @@ class Post(Base):
 
     content: Mapped[str] = mapped_column(nullable=False)
 
-    published: Mapped[bool] = mapped_column(server_default="True")
+    published: Mapped[bool] = mapped_column(server_default=true())
 
     author_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
@@ -48,4 +49,10 @@ class Post(Base):
     author: Mapped[User] = relationship(
         "User",
         back_populates="posts",
+    )
+
+    # One Post -> Many PostLikes
+    likes: Mapped[list[PostLike]] = relationship(
+        back_populates="post",
+        cascade="all, delete-orphan",
     )

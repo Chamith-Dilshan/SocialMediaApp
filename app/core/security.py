@@ -8,7 +8,7 @@ from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 
 from app.core.config import settings
-from app.schemas.token import TokenData
+from app.dtos.token_dto import TokenData
 
 # --- Config ---
 SECRET_KEY: str = settings.SECRET_KEY

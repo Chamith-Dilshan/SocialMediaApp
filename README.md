@@ -67,6 +67,20 @@ fastapi dev or fastapi dev main.py
 
 ```
 pytest or uv run pytest
+# Run all tests
+pytest
+
+# Verbose output
+pytest -v
+
+# With coverage summary in terminal
+pytest --cov=app --cov-report=term-missing
+
+# With HTML coverage report
+pytest --cov=app --cov-report=html
+
+# Target ≥ 90% coverage, fail otherwise
+pytest --cov=app --cov-fail-under=90
 ```
 
 ### Initialize Alembic

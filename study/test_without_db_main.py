@@ -226,8 +226,8 @@ class TestDeletePost:
 # class TestEdgeCases:
 #     def test_create_then_delete_all_posts(self):
 #         """Test creating and deleting to ensure ID generation works."""
-#         client.delete("/posts/1")
-#         client.delete("/posts/2")
+#         utils.delete("/posts/1")
+#         utils.delete("/posts/2")
 #         assert len(posts) == 0
 #
 #         new_post = {
@@ -235,7 +235,7 @@ class TestDeletePost:
 #             "content": "Content",
 #             "author": "Author",
 #         }
-#         response = client.post("/posts", json=new_post)
+#         response = utils.post("/posts", json=new_post)
 #         assert response.status_code == status.HTTP_201_CREATED
 #         assert response.json()["post"]["id"] == 3  # Not reset to 1
 #
@@ -247,7 +247,7 @@ class TestDeletePost:
 #                 "content": f"Content {i}",
 #                 "author": f"Author {i}",
 #             }
-#             response = client.post("/posts", json=new_post)
+#             response = utils.post("/posts", json=new_post)
 #             assert response.status_code == status.HTTP_201_CREATED
 #             assert response.json()["post"]["id"] == 3 + i
 #         assert len(posts) == 5
