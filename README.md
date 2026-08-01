@@ -86,14 +86,31 @@ pytest --cov=app --cov-fail-under=90
 ### Initialize Alembic
 
 ```
-alembic init -t async alembic
+uv add alembic
+uv run alembic --help
+alembic init -t pyproject_async alembic
 ```
 
-alembic current  
-alembic history     
-alembic downgrade base
-alembic revision --autogenerate -m "create users table"
-alembic upgrade head
+### Run Alembic
+
+when we want to do a change in database we can make a revision.
+this will help us to track the changes in database.
+
+```
+uv run alembic revision -m "create users table"
+```
+
+alembic revision --autogenerate -m "create tables" -to auto generate revision file
+alembic current -to check the current revision
+alembic heads -to check the latest revision
+alembic upgrade head -to upgrade to latest revision
+alembic upgrade {revision number} -to upgrade to selected revision
+alembic history -to check the history of revisions   
+alembic downgrade -1 -to downgrade to previous revision
+alembic downgrade {revision number} -to downgrade to selected revision
+
+make sure to import model classes to env.py.  
+ex -> import app.models.models # noqa: F401
 
 Contribution guide lines->
 
