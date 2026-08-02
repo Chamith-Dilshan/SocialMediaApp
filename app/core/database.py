@@ -24,6 +24,70 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.core.config import settings
 
+"""
+Alembic And SQLAlchemy URL Escaping
+====================
+
+Database passwords may contain special characters such as:
+
+    @  #  %  $  !  &
+
+When building a SQLAlchemy connection URL, these characters must first
+be URL-encoded.
+
+Example:
+
+    Password:
+        my#password
+
+    URL-encoded:
+        my%23password
+
+SQLAlchemy accepts the encoded URL directly:
+
+    postgresql+asyncpg://user:my%23password@localhost/db
+
+However, Alembic's Config.set_main_option() uses Python's ConfigParser
+internally. ConfigParser treats '%' as a special interpolation character.
+
+This means a URL containing:
+
+    %23
+
+will raise:
+
+    ValueError: invalid interpolation syntax
+
+unless the percent signs are escaped.
+
+Before passing the URL to Alembic, replace:
+
+    %  ->  %%
+
+Example:
+
+    DATABASE_URL = (
+        settings.database_url
+        .replace("%", "%%")
+    )
+
+This converts:
+
+    postgresql+asyncpg://user:my%23password@localhost/db
+
+into:
+
+    postgresql+asyncpg://user:my%%23password@localhost/db
+
+which Alembic can safely process.
+
+References:
+- SQLAlchemy URL encoding is required for special characters in
+  usernames/passwords.
+- Alembic Config.set_main_option() uses ConfigParser interpolation,
+  which requires literal '%' characters to be escaped as '%%'.
+"""
+
 DATABASE_URL = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
 
 engine = create_async_engine(
