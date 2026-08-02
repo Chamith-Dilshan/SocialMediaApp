@@ -112,6 +112,14 @@ alembic downgrade {revision number} -to downgrade to selected revision
 make sure to import model classes to env.py.  
 ex -> import app.models.models # noqa: F401
 
+### Extra
+
+do you know that you can go to your web browser and got to the google.com then open up the Dev Tools and go to Console
+tab.
+there you can right this command to send a request to the server. and you can see the response.
+fetch('http://localhost:8000/health').then(res => res.json()).then(console.log)
+This is about CORS Policies, if you didn't set up it, you will get an error.
+
 Contribution guide lines->
 
 1. we use pydantic for data validation
