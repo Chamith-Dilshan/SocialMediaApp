@@ -112,13 +112,45 @@ alembic downgrade {revision number} -to downgrade to selected revision
 make sure to import model classes to env.py.  
 ex -> import app.models.models # noqa: F401
 
-### Extra
+### CORS Policy
 
 do you know that you can go to your web browser and got to the google.com then open up the Dev Tools and go to Console
 tab.
 there you can right this command to send a request to the server. and you can see the response.
 fetch('http://localhost:8000/health').then(res => res.json()).then(console.log)
 This is about CORS Policies, if you didn't set up it, you will get an error.
+
+### Docker
+
+create a docker image
+
+````aiignore
+docker build -t social-media-app .
+docker image ls
+````
+
+use created docker image and use docker compose to create the container.
+
+To completely remove the container and all its data,
+then build the image again and run it.
+
+````aiignore
+docker compose down -v
+docker volume prune -f
+docker compose up --build
+````
+
+````aiignore
+docker compose ps
+docker compose logs -f
+docker compose up
+````
+
+to enter into the container
+
+````aiignore
+docker exec -it socialmediaapp-api-1 bash
+````
 
 Contribution guide lines->
 
