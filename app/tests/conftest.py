@@ -14,10 +14,8 @@ from app.core.database import get_db
 from app.main import app
 from app.models.post import Post  # noqa: F401
 from app.models.post_like import PostLike  # noqa: F401
-
 # Keep all models imported so Base.metadata is fully populated
 from app.models.user import User  # noqa: F401
-
 # Pull fixture modules into conftest scope so pytest discovers them
 from app.tests.fixtures.auth_fixtures import (  # noqa: F401
     authenticated_user,
@@ -30,12 +28,7 @@ from app.tests.fixtures.user_fixtures import second_user  # noqa: F401
 # ---------------------------------------------------------------------------
 # Test database URL — uses TEST_DB from .env
 # ---------------------------------------------------------------------------
-TEST_DATABASE_URL = (
-    f"postgresql+asyncpg://"
-    f"{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}"
-    f"@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}"
-    f"/{settings.TEST_DB}"
-)
+TEST_DATABASE_URL = settings.test_database_url
 
 # ---------------------------------------------------------------------------
 # Single engine for the whole test session
