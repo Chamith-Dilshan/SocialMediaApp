@@ -70,4 +70,5 @@ async def health_check():
     return {
         "status": "healthy",
         "version": settings.APP_VERSION,
+        "message": "Welcome to Fast API",
     }

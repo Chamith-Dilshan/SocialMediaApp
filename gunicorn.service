@@ -1,0 +1,19 @@
+# This file is for deployment on linux virtual matchine on cloud
+[Unit]
+Description=fastapi-social-media-api
+# wait until the network is up
+After=network.target
+
+[Service]
+# Recomonded to create a user on linux and use it here
+User=chamith
+Group=chamith
+# Point to the directory your app is running
+WorkingDirectory=/home/chamith/app/src/
+# Point to your virtual environtment
+Environment="PATH=/home/chamith/app/venv/bin"
+EnvironmentFile=/home/chamith/.env
+ExecStart=/home/chamith/app/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app -b 0.0.0.0:8000
+
+[Install]
+WantedBy=multi-user.target
