@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: social-media-app
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: gg#d1%dsW
+      POSTGRES_PASSWORD: N3#%lbL
 
     ports:
       - "5432:5432"
@@ -35,7 +35,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB=social-media-app
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=gg#d1%dsW
+      - POSTGRES_PASSWORD=N3#%lbL
 
       - TEST_DB=social-media-app-test
 

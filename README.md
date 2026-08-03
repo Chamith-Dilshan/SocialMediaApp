@@ -122,7 +122,7 @@ This is about CORS Policies, if you didn't set up it, you will get an error.
 
 ### Docker
 
-create a docker image
+create a docker image manually.
 
 ````aiignore
 docker build -t social-media-app .
@@ -135,21 +135,29 @@ To completely remove the container and all its data,
 then build the image again and run it.
 
 ````aiignore
-docker compose down -v
+docker compose docker compose -f docker-compose-dev.yml down -v
 docker volume prune -f
-docker compose up --build
+docker compose up -f docker-compose-dev.yml --build
 ````
 
 ````aiignore
 docker compose ps
 docker compose logs -f
-docker compose up
+docker compose -f docker-compose-dev.yml up
 ````
 
 to enter into the container
 
 ````aiignore
 docker exec -it socialmediaapp-api-1 bash
+````
+
+You can also push the image to docker hub.
+
+````aiignore
+docker image ls
+docker image tag socialmediaapp-api chamith009/social_media_app
+docker push chamith009/social_media_app
 ````
 
 Contribution guide lines->
