@@ -14,8 +14,10 @@ from app.core.database import get_db
 from app.main import app
 from app.models.post import Post  # noqa: F401
 from app.models.post_like import PostLike  # noqa: F401
+
 # Keep all models imported so Base.metadata is fully populated
 from app.models.user import User  # noqa: F401
+
 # Pull fixture modules into conftest scope so pytest discovers them
 from app.tests.fixtures.auth_fixtures import (  # noqa: F401
     authenticated_user,
@@ -53,11 +55,11 @@ TestAsyncSessionFactory = async_sessionmaker(
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def setup_test_database():
     async with test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)  # clean slate
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(Base.metadata.drop_all(bind=test_engine))  # clean slate
+        await conn.run_sync(Base.metadata.create_all(bind=test_engine))
     yield
     async with test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all(bind=test_engine))
     await test_engine.dispose()
 
 

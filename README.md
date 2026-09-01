@@ -70,6 +70,12 @@ pytest or uv run pytest
 # Run all tests
 pytest
 
+# Run tests in a specific file
+pytest tests/test_main.py
+
+# Stop on first failure
+pytest -x 
+
 # Verbose output
 pytest -v
 
@@ -143,6 +149,7 @@ docker compose up -f docker-compose-dev.yml --build
 ````aiignore
 docker compose ps
 docker compose logs -f
+ docker compose -f docker-compose-dev.yml build
 docker compose -f docker-compose-dev.yml up
 ````
 
