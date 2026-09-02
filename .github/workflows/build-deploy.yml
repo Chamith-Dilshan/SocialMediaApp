@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  job1:
+  build:
     environment: production
     env:
       APP_NAME: ${{secrets.APP_NAME}}
@@ -73,3 +73,24 @@ jobs:
       - name: Image digest
         run: echo ${{steps.docker_build.outputs.digest}}
 
+
+  deploy:
+    needs:
+      - build
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pulling the latest changes
+        uses: actions/checkout@v7
+      - name: Deploy to ubuntu server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          password: ${{ secrets.PROD_PASSWORD }}
+          port: ${{ secrets.PROD_PORT }}
+          script: |
+            cd app/src
+            git pull
+            echo ${{secrets.PROD_PASSWORD}} | sudo -S systemctl restart api
+            
