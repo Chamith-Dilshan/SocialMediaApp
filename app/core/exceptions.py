@@ -6,17 +6,22 @@ class AppException(Exception):
     ):
         self.status_code = status_code
         self.message = message
+        super().__init__(message)
 
 
 class NotFoundException(AppException):
-    def __init__(self, message: str):
-        super().__init__(404, message)
+    def __init__(self, message: str, status_code: int = 404):
+        super().__init__(status_code, message)
+
 
 class ConflictException(AppException):
-    pass
+    def __init__(self, message: str, status_code: int = 409):
+        super().__init__(status_code, message)
+
 
 class ValidationException(AppException):
-    pass
+    def __init__(self, message: str, status_code: int = 422):
+        super().__init__(status_code, message)
 
 class PostNotFoundError(Exception):
     pass
@@ -29,8 +34,8 @@ class UserNotFoundError(Exception):
     pass
 
 class ForbiddenException(AppException):
-    def __init__(self, message: str):
-        super().__init__(403, message)
+    def __init__(self, message: str, status_code: int = 403):
+        super().__init__(status_code, message)
 
 class DatabaseException(Exception):
     def __init__(
