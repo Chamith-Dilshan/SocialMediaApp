@@ -1,12 +1,13 @@
 import time
 
 import jwt
+import pytest
 from httpx import AsyncClient
 
 from app.core.config import settings
-from app.tests.factories.user_factory import UserFactory
-from app.tests.utils.constants import LOGIN_URL, ME_URL, REGISTER_URL
-from app.tests.utils.helpers import create_user
+from tests.factories.user_factory import UserFactory
+from tests.utils.constants import LOGIN_URL, ME_URL, REGISTER_URL
+from tests.utils.helpers import create_user
 
 
 # ===========================================================================
@@ -114,6 +115,28 @@ class TestLogin:
         )
 
         assert response.status_code == 401
+
+    @pytest.mark.parametrize(
+        "username, password, status_code",
+        [
+            ("wrong_username", "StrongP@ssw0rd!", 401),
+            ("ghost@example.com", "wrong_password", 401),
+            ("wrong_username", "wrong_password", 401),
+            (None, "StrongP@ssw0rd!", 422),
+            ("ghost@example.com", None, 422),
+            (None, None, 422),
+        ],
+    )
+    async def test_login_fail(
+        self, client: AsyncClient, username, password, status_code
+    ):
+        response = await client.post(
+            LOGIN_URL,
+            data={"username": username, "password": password},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+        assert response.status_code == status_code
 
     async def test_login_missing_username(self, client: AsyncClient):
         response = await client.post(

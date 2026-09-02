@@ -1,8 +1,8 @@
 import pytest_asyncio
 from httpx import AsyncClient
 
-from app.tests.factories.post_factory import PostFactory
-from app.tests.utils.constants import POSTS_URL
+from tests.factories.post_factory import PostFactory
+from tests.utils.constants import POSTS_URL
 
 
 @pytest_asyncio.fixture

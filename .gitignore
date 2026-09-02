@@ -61,6 +61,7 @@ Thumbs.db
 .mypy_cache/
 .dmypy.json
 dmypy.json
+.ruff_cache/
 
 # FastAPI specific
 *.log

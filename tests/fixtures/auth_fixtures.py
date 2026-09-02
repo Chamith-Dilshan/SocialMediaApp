@@ -1,7 +1,7 @@
 import pytest_asyncio
 from httpx import AsyncClient
 
-from app.tests.utils.helpers import create_authenticated_user
+from tests.utils.helpers import create_authenticated_user
 
 
 @pytest_asyncio.fixture
