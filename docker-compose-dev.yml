@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: fastapitemplate
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: N3#%lbL
+      POSTGRES_PASSWORD: FG23#RF%sFbf
 
     ports:
       - "5432:5432"
