@@ -27,23 +27,6 @@ Async FastAPI • UV • PostgreSQL • SQLAlchemy • Alembic • Docker • Ng
 | 🔄 Automation | GitHub Actions CI/CD              |
 | 🧹 Quality    | Ruff, Black, Pyrefly              |
 
-## 🏗️ Architecture
-
-```mermaid
-flowchart LR
-
-Client --> Router
-Router --> Dependencies
-Dependencies --> Services
-Services --> Repositories
-Repositories --> PostgreSQL
-
-Services --> DTOs
-Services --> Security
-
-SQLAlchemy --> PostgreSQL
-```
-
 ## 📁 Project Structure
 
 ```text
