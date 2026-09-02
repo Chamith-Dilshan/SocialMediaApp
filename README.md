@@ -137,7 +137,7 @@ This is about CORS Policies, if you didn't set up it, you will get an error.
 create a docker image manually.
 
 ````aiignore
-docker build -t social-media-app .
+docker build -t fastapitemplate .
 docker image ls
 ````
 
@@ -162,15 +162,15 @@ docker compose -f docker-compose-dev.yml up
 to enter into the container
 
 ````aiignore
-docker exec -it socialmediaapp-api-1 bash
+docker exec -it fastapitemplate-api-1 bash
 ````
 
 You can also push the image to docker hub.
 
 ````aiignore
 docker image ls
-docker image tag socialmediaapp-api chamith009/social_media_app
-docker push chamith009/social_media_app
+docker image tag fastapitemplate-api chamith009/fastapitemplate
+docker push chamith009/fastapitemplate
 ````
 
 Contribution guide lines->
