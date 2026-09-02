@@ -1,8 +1,8 @@
 from httpx import AsyncClient
 
-from app.tests.factories.post_factory import PostFactory
-from app.tests.utils.constants import POSTS_URL, PUBLIC_POSTS_URL
-from app.tests.utils.helpers import create_authenticated_user
+from tests.factories.post_factory import PostFactory
+from tests.utils.constants import POSTS_URL, PUBLIC_POSTS_URL
+from tests.utils.helpers import create_authenticated_user
 
 
 # ===========================================================================

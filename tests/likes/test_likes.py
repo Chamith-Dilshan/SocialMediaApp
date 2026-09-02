@@ -1,7 +1,7 @@
 from httpx import AsyncClient
 
-from app.tests.utils.constants import LIKES_URL, POSTS_URL
-from app.tests.utils.helpers import create_authenticated_user
+from tests.utils.constants import LIKES_URL, POSTS_URL
+from tests.utils.helpers import create_authenticated_user
 
 
 # ===========================================================================

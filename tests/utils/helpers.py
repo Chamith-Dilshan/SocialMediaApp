@@ -1,7 +1,7 @@
 from httpx import AsyncClient
 
-from app.tests.factories.user_factory import UserFactory
-from app.tests.utils.constants import LOGIN_URL, REGISTER_URL
+from tests.factories.user_factory import UserFactory
+from tests.utils.constants import LOGIN_URL, REGISTER_URL
 
 
 async def create_user(client: AsyncClient, **overrides) -> dict:
