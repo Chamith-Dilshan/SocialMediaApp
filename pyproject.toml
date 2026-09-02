@@ -1,7 +1,7 @@
 [project]
-name = "socialmediaapp"
+name = "fast_api_prod_template"
 version = "0.1.0"
-description = "Social Media API"
+description = "FastAPI Production Ready Template"
 readme = "README.md"
 requires-python = ">=3.14,<3.15"
 dependencies = [

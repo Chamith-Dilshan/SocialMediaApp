@@ -1,4 +1,4 @@
-# SocialMediaApp
+# fast_api_prod_template
 
 A modern Python application built with **FastAPI** and managed with **uv**, a fast and reliable Python package manager.
 
@@ -62,6 +62,12 @@ make sure that you have installed **fastapi[standard]** dependency
 ```
 fastapi dev or fastapi dev main.py
 ```
+
+### Creating a Secret Key
+
+````aiignore
+openssl rand -hex 32
+````
 
 ### Run Tests
 
