@@ -41,7 +41,7 @@ Repositories --> PostgreSQL
 Services --> DTOs
 Services --> Security
 
-PostgreSQL --> SQLAlchemy
+SQLAlchemy --> PostgreSQL
 ```
 
 ## 📁 Project Structure
