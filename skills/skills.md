@@ -1,37 +1,14 @@
-For a clean architecture, services should call other services when you're invoking business logic, not repositories
-directly.
+## Project Skill
 
-Good
-PostLikeService
--> PostService.verify_post_exists()
+The discoverable, agent-ready development workflow is maintained at [`.github/skills/fastapi-backend-template/SKILL.md`](../.github/skills/fastapi-backend-template/SKILL.md). Load it when adding or changing API behavior, database schema, authentication, tests, or deployment configuration.
 
-FollowService
--> UserService.get_user()
+The central architectural rule is:
 
-Because:
+```text
+Router -> Service -> Repository -> Database
+```
 
-Business rules stay in one place.
-Validation stays in one place.
-Future changes affect only one service.
-Bad
-PostLikeService
--> PostRepository
-
-CommentService
--> PostRepository
-
-BookmarkService
--> PostRepository
-
-A common rule:
-
-Call Service when
-
-You need business logic.
-
-Call Repository when
-
-You only need data access.
+Call a service when business logic, validation, authorization, or orchestration is needed. Call a repository for data access only. A service may call another service when it needs another domain's business rule; do not make feature services reach across repositories to duplicate those rules.
 
 Repository
 returns ORM Models
