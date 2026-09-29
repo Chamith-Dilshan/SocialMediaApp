@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🚀 FastAPI Production Template
+#  Social Media App With FastAPI
 
-### Production-Ready FastAPI Backend Template
+### With Production-Ready FastAPI Backend
 
 Async FastAPI • UV • PostgreSQL • SQLAlchemy • Alembic • Docker • Nginx • GitHub Actions • VPS Deployment
 
