@@ -1,5 +1,7 @@
 <div align="center">
 
+![FastAPI](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png)
+
 #  Social Media App With FastAPI
 
 ### With Production-Ready FastAPI Backend
